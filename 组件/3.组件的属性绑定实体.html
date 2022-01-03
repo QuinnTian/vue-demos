@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>组件的属性绑定实体</title>    
+		<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+
+	</head>
+	<body>
+		<div id="blog-post-demo">
+			<!-- 
+			  组件的属性是可以绑定实体的，如何绑定？
+			  答案：1-3
+			  绑定实体的作用是什么？
+				避免出现过多属性混乱的情况
+			 
+			 -->
+			<!--
+			2.该组件结合各种指令使用
+			v-for：表示遍历实例中的data中的post数据，格式是项目名 in 集合名
+			v-bind:key：表示绑定key属性
+			v-bind:title:表示绑定title属性
+			-->
+			<!--传入实体，当定义的属性过多的时候使用
+			较少的时候可以直接用v-bind指令
+				<blog-post
+				  v-for="post in posts"
+				  v-bind:key="post.id"
+				  v-bind:title="post.title"
+				  v-bind:content="post.content"
+				  v-bind:publishedAt="post.publishedAt"
+				  v-bind:comments="post.comments"
+				></blog-post>
+			-->
+			<blog-post
+			  v-for="post in posts"
+			    v-bind:key="post.id"
+			    v-bind:post="post"
+			>
+			</blog-post>
+		</div>
+		
+	</body>
+	<script>
+		/**
+		 * 1.定义一个组件
+		 * props:表示定义组件有什么属性，格式是['属性1','属性2']
+		 * template:表示模板
+		 * {{title}}表示输出属性中的title,这里输出的是上面使用组件的时候传递过来的title值
+		 */
+		
+		//1.1定义个属性可以是一个实体，也就是可以传入一个实体
+		Vue.component('blog-post', {
+		  props: ['post'],
+		  template: `
+				<div class="blog-post">
+			      <h3>{{ post.title }}</h3>
+			      <div v-html="post.content"></div>
+				  <div v-html="post.publishedAt"></div>
+				  <div v-html="post.comments"></div>
+			    </div>
+			`
+		})
+		/**
+		 * 3.创建一个vue实例
+		 * el:绑定一个根元素
+		 */
+		new Vue({
+		  el: '#blog-post-demo',
+		  data: {
+		    posts: [
+		      { id: 1, title: 'My journey with Vue',content:'内容1',publishedAt:'2015',comments:'评论1' },
+		      { id: 2, title: 'Blogging with Vue' ,content:'内容2',publishedAt:'2016',comments:'评论2'},
+		      { id: 3, title: 'Why Vue is so fun',content:'内容3',publishedAt:'2017',comments:'评论3' }
+		    ]
+		  }
+		})
+
+	</script>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+	</head>
+	<body>
+    1.基本组件的使用:下面的v-bind可以绑定单个属性，但是比较复杂，因此直接用实体
+    <div id="blog-post-demo">
+      <blog-post
+        v-for="post in posts"
+        v-bind:key="post.id"
+        v-bind:post="post"
+      >
+      </blog-post>
+
+    </div>
+	</body>
+  <script>
+  //1.基本组件的使用
+  //注册一个组件
+  Vue.component('blog-post', {//第一个参数是组件的名字，上面调用时<blog-post>
+    props: ['post'],//这个参数是向模板传递的属性，就是下面的post.title
+    template: `
+      <div class="blog-post">
+        <h3>{{ post.title }}</h3>
+        <div v-html="post.content"></div>
+      </div>
+    `
+  })
+  new Vue({
+    el: '#blog-post-demo',
+    data: {
+      posts: [
+        { id: 1, title: 'My journey with Vue' },
+        { id: 2, title: 'Blogging with Vue' },
+        { id: 3, title: 'Why Vue is so fun' }
+      ]
+    }
+  })
+  
+  
+  </script>
+</html>

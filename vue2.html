@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+	</head>
+	<body>
+    2. 
+    什么是父组件和子组件？<br />
+    父组件是你定义的那个组件就是，子组件就是该组件下面各类元素
+    
+    v-on:enlarge-text="postFontSize += 0.1"监听enlarge-text事件
+    $event表示子组件给父组件传递的值
+    父组件是指 blog-post，子组件是这个组件下面的任意一个元素
+    如果父组件监听后执行的方法，将传入这个方法的第一个参数值
+    <div id="blog-posts-events-demo">
+      <div :style="{ fontSize: postFontSize + 'em' }">
+        <blog-post
+          v-for="post in posts"
+          v-bind:key="post.id"
+          v-bind:post="post"
+          v-on:enlarge-text="onEnlargeText"
+        >
+        </blog-post>
+        <!-- <blog-post
+          v-for="post in posts"
+          v-bind:key="post.id"
+          v-bind:post="post"
+          v-on:enlarge-text="postFontSize += $event"
+        ></blog-post> -->
+        如果传入的是一个方法 v-on:enlarge-text="onEnlargeText" $event会作为第一个参数传入
+
+      </div>
+
+
+
+    </div>
+	</body>
+  <script>
+  //2.父组件监听子组件
+  //<button v-on:click="$emit('enlarge-text')">
+  //$emit('enlarge-text',0.1)这个方法里面是事件名称，第二个参数给父组件抛出的值
+  //注册一个组件
+  Vue.component('blog-post', {
+    props: ['post'],
+    template: `
+      <div class="blog-post">
+        <h3>{{ post.title }}</h3>
+        <button v-on:click="$emit('enlarge-text', 0.1)">
+          Enlarge text
+        </button>
+        <div v-html="post.content"></div>
+      </div>
+    `
+  });
+  new Vue({
+    el: '#blog-posts-events-demo',
+    data: {
+      posts: [
+        { id: 1, title: 'My journey with Vue',content:"博文1的内容" },
+        { id: 2, title: 'Blogging with Vue',content:"博文2的内容" },
+        { id: 3, title: 'Why Vue is so fun',content:"博文3的内容" }
+      ],
+      postFontSize: 1
+    },
+    methods: {
+      onEnlargeText: function (enlargeAmount) {
+        this.postFontSize += enlargeAmount
+      }
+      }
+  })
+
+
+  </script>
+</html>

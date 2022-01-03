@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>监听子组件</title>
+		<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+		
+	</head>
+	<body>
+		<!-- 监听子组件
+		 什么时父组件？子组件
+			 父组件：你所定义的组件整体,demo中的blog-post
+			 子组件：就是模板中定义的各种HTML元素
+		 如何监听子组件并做出相应的操作？
+		 如何监听子组件，子组件抛出事件的同时附带值？如何获取？
+		 如果监听到事件执行方法怎么进行值传递？
+		 答案：1-4
+		 本demo的作用
+		 当放大字体按钮点击时会有一个事件上传到父组件，父组件可以监听已做出相应的增大字号 的操作
+		 -->
+		<div id="blog-posts-events-demo">
+			<!-- v-bind:style简写:style 
+			fontSize: postFontSize + 'em' 表示style的fontSize属性
+			  * 2.v-on:enlarge-text="postFontSize += $event"
+				  表示监听enlarge-text事件，这个事件在下面子组件中定义
+				  $event，表示抛出事件的时候附带的一个值
+			-->
+		  <div :style="{ fontSize: postFontSize + 'em' }">
+		    <blog-post
+		      v-for="post in posts"
+		      v-bind:key="post.id"
+		      v-bind:post="post"
+			  
+			  v-on:enlarge-text="postFontSize += 0.1"
+		    ></blog-post>
+		  </div>
+		</div>
+	</body>
+	<script>
+	
+		Vue.component('blog-post', {
+		  props: ['post'],
+		  /**
+		   * * 
+		   * 1.v-on:click="$emit('enlarge-text', 0.1)"
+		   * 	这个方法表示声明一个enlarge-text事件，
+		   * 	第一个参数：当点击按钮的时候会抛出一个enlarge-text自定义事件
+		   * 	第二个参数：抛出这个事件同时附带一个值
+		   * 3. v-on:enlarge-text="onEnlargeText"
+		   * 	如果监听到事件执行的是一个方法，抛出事件所带的值将会传入这个方法的第一个参数
+		   */
+		  template: `
+		    <div class="blog-post">
+		      <h3>{{ post.title }}</h3>
+		      <button v-on:click="$emit('enlarge-text', 0.1)">
+		        Enlarge text
+		      </button>
+		      <div v-html="post.content"></div>
+		    </div>
+		  `
+		})
+		new Vue({
+		  el: '#blog-posts-events-demo',
+		  data: {
+		    posts: [
+		      { id: 1, title: 'My journey with Vue',content:'内容1',publishedAt:'2015',comments:'评论1' },
+		      { id: 2, title: 'Blogging with Vue' ,content:'内容2',publishedAt:'2016',comments:'评论2'},
+		      { id: 3, title: 'Why Vue is so fun',content:'内容3',publishedAt:'2017',comments:'评论3' }
+		    ],
+			/**
+			 * 定义一个变量用与控制字号
+			 */
+		    postFontSize: 1
+		  },
+		  //4.onEnlargeText
+		  methods: {
+		    onEnlargeText: function (enlargeAmount) {
+		      this.postFontSize += enlargeAmount
+		    }
+		  }
+		})
+	
+	</script>
+</html>

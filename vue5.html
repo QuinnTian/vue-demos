@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Dynamic Components Example</title>
+    <script src="https://unpkg.com/vue"></script>
+    <style>
+      .tab-button {
+        padding: 6px 10px;
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
+        border: 1px solid #ccc;
+        cursor: pointer;
+        background: #f0f0f0;
+        margin-bottom: -1px;
+        margin-right: -1px;
+      }
+      .tab-button:hover {
+        background: #e0e0e0;
+      }
+      .tab-button.active {
+        background: #e0e0e0;
+      }
+      .tab {
+        border: 1px solid #ccc;
+        padding: 10px;
+      }
+    </style>
+  </head>
+  <body>
+	<!--绑定根元素-->
+    <div id="dynamic-component-demo" class="demo">
+	   <!--
+	   1.遍历标签组中的标签
+	   2.绑定key
+	   3.绑定CSS Class tab-button  active是否输出看是否是真
+	   4.监听click事件，当点击的时候吧tab的值赋值给currenttab
+	   -->
+      <button
+        v-for="tab in tabs"
+        v-bind:key="tab"
+        v-bind:class="['tab-button', { active: currentTab === tab }]"
+        v-on:click="currentTab = tab"
+      >
+        {{ tab }}
+      </button>
+	  <!--
+	    v-bind:is="currentTabComponent
+	  表示执行currentTabComponent计算属性返回当前currentTab，是实现切换
+	  -->
+      <component v-bind:is="currentTabComponent" class="tab"></component>
+    </div>
+
+    <script>
+	  //定义三个选项卡的组件
+      Vue.component("tab-home", {
+        template: "<div>Home component</div>"
+      });
+      Vue.component("tab-posts", {
+        template: "<div>Posts component</div>"
+      });
+      Vue.component("tab-archive", {
+        template: "<div>Archive component</div>"
+      });
+
+      new Vue({
+		//绑定一个根元素
+        el: "#dynamic-component-demo",
+        data: {
+		  //目前所在的TAB
+          currentTab: "Home",
+		  //定义TAB标签组数组
+          tabs: ["Home", "Posts", "Archive"]
+        },
+		//计算属性
+        computed: {
+          currentTabComponent: function() {
+            return "tab-" + this.currentTab.toLowerCase();
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
